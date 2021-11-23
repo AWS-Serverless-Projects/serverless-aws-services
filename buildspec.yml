@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.7
+    commands:
+      - pip3 install --upgrade aws-sam-cli
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on `date`
+      - sam package --template-file template.yml --s3-bucket $S3BUCKET --output-template-file packaged-template.yml
+    finally:
+      - echo This always runs even if the install command fails
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - echo Build completed on `date`

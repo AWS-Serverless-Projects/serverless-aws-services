@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  AWS services with available regions:
+
+  Get a API Gateway end point which will return AWS services with their available region codes.
+  Use query parameter `region_names=true` to output the same with the region names.
+
+Globals:
+  Function:
+    Timeout: 20
+    MemorySize: 192
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: aws-services-by-region
+    Description: Serverless application which provides an API endpoint to get AWS services with available regions.
+    Author: Pubudu Jayawardana
+    SpdxLicenseId: MIT
+    LicenseUrl: LICENSE.md
+    ReadmeUrl: README.md
+    Labels: ['regions','services', 'python']
+    HomePageUrl: https://github.com/pubudusj/serverless-aws-services
+    SemanticVersion: 0.0.1
+    SourceCodeUrl: https://github.com/pubudusj/serverless-aws-services
+
+Resources:
+  AwsServicesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: aws_services/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Events:
+        AwsServices:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+
+Outputs:
+  AwsServicesApi:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  AwsServicesFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt AwsServicesFunction.Arn
+  AwsServicesFunctionIamRole:
+    Description: "Implicit IAM Role created for function"
+    Value: !GetAtt AwsServicesFunction.Arn
